@@ -1,96 +1,61 @@
-#include<bits/stdc++.h>
+/*
+  “ Laughing, crying, tumbling, mumbling,
+    Gotta do more, gotta be more.
+    Chaos screaming, chaos dreaming,
+    Gotta be more, gotta do more.  ”
+*/
+#include <bits/stdc++.h>
+ 
+#pragma GCC optimization ("O2")
+#pragma GCC optimization ("unroll-loops")
+ 
 using namespace std;
-
-bool bfs(int x, vector<int> vis, vector<int> adj[], int &lev1, int &lev2)
-{
-    queue<int> q;
-    q.push(x);
-    vis[x] = 1;
-
-    int i =-1;
-
-    while(!q.empty() )
-    {
-        int size = q.size();
-        i++;
-        for(int j=0;j<size;j++)
-        {
-                 int node = q.front();
-                 q.pop();
-           if(i == 0)
-          {
-            for(auto it : adj[node])
-            {
-                if(vis[it] == 0)
-                {
-                    vis[it] = 1;
-                    q.push(it);
-                    lev1++;
-                }
-            }
-         }
-        else if(i == 1)
-        {
-            for(auto it : adj[node])
-            {
-                if(vis[it] == 0)
-                {
-                    vis[it] = 1;
-                    q.push(it);
-                    lev2++;
-                }
-            }
-
-            if(lev2%lev1 != 0)
-            return false;
-        }
-        else if(i == 2)
-        {
-            for(auto it : adj[node])
-            {
-                if(vis[it] == 0)
-                {
-                    return false;
-                }
-            }
-        }
-
-        }
-        
+ 
+void Solve() {
+    int n , m;
+    cin >> n >> m;
+    vector <int> nodes[n + 1];
+    map < int , int > indegree;
+    for(int i = 0;i<m;++i) {
+        int u , v;
+        cin >> u >> v;
+        nodes[u].push_back(v);
+        nodes[v].push_back(u);
+        ++indegree[u];
+        ++indegree[v];
     }
-
-    return true;
+    for(int i = 1;i<=n;++i) {
+        int tx = indegree[i];
+        unordered_set < int > xd;
+        bool poss = 1;
+        for(int v : nodes[i]) {
+            xd.insert(indegree[v] - 1);
+            for(int x : nodes[v]) {
+                if(x != i && indegree[x] != 1) {
+                    poss = 0;
+                    break;
+                }
+            }
+            if(!poss) break;
+        }
+        if(xd.size() == 1 && poss) {
+            
+            cout << tx << ' ' << *xd.begin() << "\n" ;
+            return;
+        }
+    }
+ 
 }
-
-int main()
-{
-    int t;
-    cin >> t;
-
-    while(t--)
-    {
-        int n, m;
-        cin >> n >> m;
-
-        vector<int> adj[n+1];
-        for(int i=0;i<m;i++)
-        {
-            int u, v;
-            cin >> u >> v;
-
-            adj[u].push_back(v);
-            adj[v].push_back(u);
-        }
-
-        for(int i =1;i<n+1;i++)
-        {
-            vector<int> vis(n+1, 0);
-            int x=0, y=0;
-            if(bfs(i, vis, adj, x, y))
-            {
-                cout << x << " " << y/x << endl;
-                break;
-            }
-        }
+ 
+signed main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    int test_cases;
+    cin >> test_cases;
+    for(int i = 0;i<test_cases;i++) {
+        Solve();
     }
+ 
+    return 0;
 }
